@@ -1,0 +1,10 @@
+.information-container {
+	display: block;
+}
+
+.message {
+	font-size: 1rem;
+	font-weight: 900;
+	justify-self: center;
+	color: #fcc9c9;
+}

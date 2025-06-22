@@ -1,0 +1,17 @@
+.content-field {
+	display: grid;
+	justify-items: stretch;
+	grid-template-columns: repeat(3, 0.5fr);
+	grid-template-rows: repeat(3, 0.5fr);
+	width: 400px;
+	height: 400px;
+	background-color: rgb(122, 122, 122);
+
+	gap: 5px;
+}
+
+.tic-tac-button {
+	font-size: 3rem;
+	font-weight: 800;
+	aspect-ratio: 1 / 1;
+}
