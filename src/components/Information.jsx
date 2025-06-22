@@ -1,4 +1,6 @@
-import { useActualStore } from '../assets/useActualStore';
+// import { useActualStore } from '../assets/useActualStore';
+import { useSelector } from 'react-redux';
+// import { gameStore } from '../store';
 import styles from '../style/information.module.css';
 
 const InformationLayout = (prop) => {
@@ -11,9 +13,11 @@ const InformationLayout = (prop) => {
 };
 
 export const Information = () => {
-	const storeState = useActualStore();
+	// const { isDraw, isGameEnded, currentPlayer } = gameStore;
 
-	const { isDraw, isGameEnded, currentPlayer } = storeState;
+	const isDraw = useSelector((state) => state.isDraw);
+	const isGameEnded = useSelector((state) => state.isGameEnded);
+	const currentPlayer = useSelector((state) => state.currentPlayer);
 
 	let gameStatus = '';
 	if (isDraw) {

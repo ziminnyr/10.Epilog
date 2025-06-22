@@ -1,11 +1,11 @@
 import { gameStore } from '../store';
 import styles from '../style/field.module.css';
 import { WIN_PATTERNS } from '../assets/settings.js';
-import { useActualStore } from '../assets/useActualStore.js';
+import { useSelector } from 'react-redux';
 
 // проверка выбранной ячейки, и изменение статуса игры
-const makeCellPick = (event, storeState) => {
-	const { isGameEnded, field, currentPlayer } = storeState;
+const makeCellPick = (event) => {
+	const { isGameEnded, field, currentPlayer } = gameStore.getState();
 
 	if (!isGameEnded) {
 		const buttonId = event.target.id;
@@ -47,11 +47,11 @@ const checkGameStatus = (newField) => {
 };
 
 const FieldLayout = () => {
-	const storeState = useActualStore();
+	const field = useSelector((state) => state.field);
 	return (
 		<div className={styles['content-field']}>
-			{storeState.field.map((el, index) => (
-				<button className={styles['tic-tac-button']} id={index} key={index} onClick={(event) => makeCellPick(event, storeState)}>
+			{field.map((el, index) => (
+				<button className={styles['tic-tac-button']} id={index} key={index} onClick={(event) => makeCellPick(event)}>
 					{el}
 				</button>
 			))}
