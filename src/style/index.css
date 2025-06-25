@@ -1,0 +1,39 @@
+@import 'tailwindcss';
+@tailwind utilities;
+
+body {
+	margin: 0;
+	/* font-size: 14px;
+	font-family:
+		-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+		'Helvetica Neue', sans-serif; */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background-color: rgb(54, 55, 60);
+	color: #fff;
+}
+
+h1 {
+	font-size: 2rem;
+}
+
+@layer components {
+	div.content-field {
+		display: grid;
+		justify-items: stretch;
+		grid-template-columns: repeat(3, 0.5fr);
+		grid-template-rows: repeat(3, 0.5fr);
+		width: 400px;
+		height: 400px;
+		background-color: rgb(122, 122, 122);
+		gap: 5px;
+	}
+
+	button.tic-tac-button {
+		font-size: 3rem;
+		font-weight: 800;
+		aspect-ratio: 1 / 1;
+		background-color: #fff;
+		color: darkblue;
+	}
+}

@@ -1,64 +1,72 @@
-import { gameStore } from '../store';
-import styles from '../style/field.module.css';
-import { WIN_PATTERNS } from '../assets/settings.js';
-import { useSelector } from 'react-redux';
+import { WIN_PATTERNS } from '../settings.js';
+import { connect } from 'react-redux';
+import { Component } from 'react';
 
-// проверка выбранной ячейки, и изменение статуса игры
-const makeCellPick = (event) => {
-	const { isGameEnded, field, currentPlayer } = gameStore.getState();
+/* -------------- КЛАССОВЫЙ КОМПОНЕНТ ----------------- */
+class OldFieldContainer extends Component {
+	state = {};
+	constructor(props) {
+		super(props);
+	}
 
-	if (!isGameEnded) {
-		const buttonId = event.target.id;
+	makeCellPick = (event) => {
+		const { isGameEnded, field, currentPlayer } = this.props;
 
-		const updatedField = [...field];
-		if (updatedField[buttonId] === '') {
-			updatedField[buttonId] = currentPlayer; //если поле свободно - ставим ход текущего игрока
+		if (!isGameEnded) {
+			const buttonId = event.target.id;
 
-			gameStore.dispatch({ type: 'SET_FIELD', payload: updatedField });
+			const updatedField = [...field];
+			if (updatedField[buttonId] === '') {
+				updatedField[buttonId] = currentPlayer; //если поле свободно - ставим ход текущего игрока
 
-			checkGameStatus(updatedField);
+				this.props.dispatch({ type: 'SET_FIELD', payload: updatedField });
+
+				this.checkGameStatus(updatedField);
+			}
 		}
+	};
+
+	checkGameStatus = (newField) => {
+		//проверка на победу
+		const hasWinner = WIN_PATTERNS.some(
+			(win_variant) =>
+				newField[win_variant[0]] !== '' &&
+				newField[win_variant[0]] === newField[win_variant[1]] &&
+				newField[win_variant[0]] === newField[win_variant[2]],
+		);
+
+		if (hasWinner) {
+			this.props.dispatch({ type: 'SET_IS_GAME_ENDED', payload: true });
+			return;
+		}
+
+		//проверка на ничью
+		if (!newField.includes('')) {
+			this.props.dispatch({ type: 'SET_IS_GAME_ENDED', payload: true });
+			this.props.dispatch({ type: 'SET_IS_DRAW', payload: true });
+			return;
+		}
+		//если победителей нет и есть пустые ячейки - меняем игрока
+		this.props.dispatch({ type: 'SET_NEXT_PLAYER' });
+	};
+
+	render() {
+		const { field } = this.props;
+		return (
+			<div className="content-field">
+				{field.map((el, index) => (
+					<button className="tic-tac-button" id={index} key={index} onClick={(event) => this.makeCellPick(event)}>
+						{el}
+					</button>
+				))}
+			</div>
+		);
 	}
-};
+}
+const mapStateToProps = (state) => ({
+	field: state.field,
+	isGameEnded: state.isGameEnded,
+	currentPlayer: state.currentPlayer,
+});
 
-//функция изменения статуса игры
-const checkGameStatus = (newField) => {
-	//проверка на победу
-	const hasWinner = WIN_PATTERNS.some(
-		(win_variant) =>
-			newField[win_variant[0]] !== '' &&
-			newField[win_variant[0]] === newField[win_variant[1]] &&
-			newField[win_variant[0]] === newField[win_variant[2]],
-	);
-
-	if (hasWinner) {
-		gameStore.dispatch({ type: 'SET_IS_GAME_ENDED', payload: true });
-		return;
-	}
-
-	//проверка на ничью
-	if (!newField.includes('')) {
-		gameStore.dispatch({ type: 'SET_IS_GAME_ENDED', payload: true });
-		gameStore.dispatch({ type: 'SET_IS_DRAW', payload: true });
-		return;
-	}
-	//если победителей нет и есть пустые ячейки - меняем игрока
-	gameStore.dispatch({ type: 'SET_NEXT_PLAYER' });
-};
-
-const FieldLayout = () => {
-	const field = useSelector((state) => state.field);
-	return (
-		<div className={styles['content-field']}>
-			{field.map((el, index) => (
-				<button className={styles['tic-tac-button']} id={index} key={index} onClick={(event) => makeCellPick(event)}>
-					{el}
-				</button>
-			))}
-		</div>
-	);
-};
-
-export const Field = () => {
-	return <FieldLayout />;
-};
+export const OldField = connect(mapStateToProps)(OldFieldContainer);
